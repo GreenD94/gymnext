@@ -24,5 +24,8 @@
                 "generic": "An error occurred during login"
             }
         }
+    },
+    "home": {
+        "welcome": "Hello World Dashboard"
     }
 }

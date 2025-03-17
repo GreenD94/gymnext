@@ -24,5 +24,8 @@
                 "generic": "Ocurrió un error durante el inicio de sesión"
             }
         }
+    },
+    "home": {
+        "welcome": "Panel de Control - Hola Mundo"
     }
 }
