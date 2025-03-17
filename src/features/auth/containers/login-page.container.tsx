@@ -1,43 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { LoginForm } from '../components/login-form.component';
-import { loginUser } from '../actions/auth.actions';
+import { useLogin } from '../hooks/use-login.hook';
 import { Container, Alert, Snackbar } from '@mui/material';
 
 export const LoginPageContainer = () => {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (data: { phoneNumber: string; cedula: string }) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      await loginUser(data);
-      
-      // Redirect based on user role (this will be handled by middleware)
-      router.push('/dashboard');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during login');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { mutate: login, isError, error, isPending, reset } = useLogin();
 
   return (
     <Container component="main" maxWidth="xs">
-      <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
+      <LoginForm onSubmit={login} isLoading={isPending} />
       
       <Snackbar 
-        open={!!error} 
+        open={isError} 
         autoHideDuration={6000} 
-        onClose={() => setError(null)}
+        onClose={() => reset()}
       >
-        <Alert severity="error" onClose={() => setError(null)}>
-          {error}
+        <Alert severity="error" onClose={() => reset()}>
+          {error?.message || 'An error occurred during login'}
         </Alert>
       </Snackbar>
     </Container>
