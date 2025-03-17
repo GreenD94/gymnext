@@ -16,20 +16,47 @@ GymNext is a modern gym management application built with Next.js, focusing on p
 
 ## Project Structure
 /src
-  /features           # Vertical slice architecture
-    /core            # Cross-cutting concerns and shared utilities
-      /supabase      # Supabase client and utilities
-    /{feature-name}   # e.g., auth, profile, home
-      /containers     # Page-level components
-      /components    # Feature-specific components
-      /actions       # Next.js server actions
-      /tests        # Unit tests
-      /utils        # Feature-specific utilities
+  /app              # Next.js app directory
+    /{route}        # Route folders
+      /page.tsx     # Thin wrapper that only imports and renders containers
+  /features         # Vertical slice architecture
+    /core          # Cross-cutting concerns and shared utilities
+      /supabase    # Supabase client and utilities
+    /{feature-name} # e.g., auth, profile, home
+      /containers  # Smart components that contain business logic and state
+                   # Each container corresponds to a page in the app directory
+                   # Pages should only import and render these containers
+      /components  # Dumb/presentational components
+      /actions     # Next.js server actions
+      /tests       # Unit tests
+      /utils       # Feature-specific utilities
   /public
-    /avatars         # User avatars
+    /avatars       # User avatars
       /male
       /female
-    /exercises       # Exercise videos
+    /exercises     # Exercise videos
+
+## Container Pattern
+The project follows a strict container pattern where:
+1. Pages (`/app/{route}/page.tsx`) must be thin wrappers that only import and render containers
+2. Containers (`/features/{feature}/containers`) hold all business logic, state management, and data fetching
+3. Components are purely presentational and receive all data via props
+4. Each page must have a corresponding container in its feature module
+5. Container naming must follow: `{page-name}-page.container.tsx`
+6. All feature-related logic must live within its feature directory
+
+Example:
+```typescript
+// /app/login/page.tsx
+export default function LoginPage() {
+  return <LoginPageContainer />;
+}
+
+// /features/auth/containers/login-page.container.tsx
+export const LoginPageContainer = () => {
+  // Business logic, state management, etc.
+};
+```
 
 ## File Naming Convention
 - All files must be lowercase

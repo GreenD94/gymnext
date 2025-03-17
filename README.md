@@ -69,17 +69,58 @@ npm run dev
 
 ## 🏗️ Project Structure
 
+### Container Pattern 🎯
+
+We follow a strict container pattern that separates concerns:
+
+```
+/app
+  /login
+    page.tsx  (thin wrapper)
+    
+/features
+  /auth
+    /containers     (business logic)
+    /components    (UI components)
+    /actions       (server actions)
+    /utils        (utilities)
+```
+
+#### Key Principles:
+
+1. **Pages are Simple** 📄
+   - Only import and render containers
+   - No business logic
+   - Example:
+   ```tsx
+   export default function LoginPage() {
+     return <LoginPageContainer />;
+   }
+   ```
+
+2. **Containers are Smart** 🧠
+   - Handle business logic
+   - Manage state
+   - Handle data fetching
+   - Live in feature modules
+   - Named as `{page-name}-page.container.tsx`
+
+3. **Components are Dumb** 🎨
+   - Pure presentational
+   - Receive data via props
+   - Reusable across features
+
+### Directory Structure
+
 ```
 src/
-├── features/          # Feature-based modules
-│   ├── auth/         # Authentication
-│   ├── profile/      # User profiles
-│   ├── workouts/     # Workout management
-│   └── billing/      # Payment handling
-├── core/             # Shared utilities
-└── public/           # Static assets
-    ├── avatars/      # User avatars
-    └── exercises/    # Exercise videos
+├── app/              # Next.js routes
+├── features/         # Feature modules
+│   ├── core/        # Shared utilities
+│   ├── auth/        # Authentication
+│   ├── profile/     # User profiles
+│   └── workouts/    # Workout management
+└── public/          # Static assets
 ```
 
 ## 🔑 User Roles
