@@ -1,37 +1,33 @@
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Button, TextField } from '@mui/material'
-import { loginAction } from '../actions/login.action'
-import { useTransition } from 'react'
+import { LoginCredentials } from '../utils/auth.types'
 
 const validationSchema = Yup.object({
-  phone: Yup.string()
+  phoneNumber: Yup.string()
     .matches(/^04\d{2}-\d{7}$/, 'Invalid phone format (e.g., 0412-1234567)')
     .required('Phone is required'),
-  identityNumber: Yup.string()
+  cedula: Yup.string()
     .matches(/^\d{1,7}$/, 'Identity number must be up to 7 digits')
     .required('Identity number is required'),
 })
 
-export const LoginForm = () => {
-  const [isPending, startTransition] = useTransition()
+interface LoginFormProps {
+  onSubmit: (credentials: LoginCredentials) => Promise<void>
+  isLoading: boolean
+}
 
+export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
   const formik = useFormik({
     initialValues: {
-      phone: '',
-      identityNumber: '',
+      phoneNumber: '',
+      cedula: '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      startTransition(async () => {
-        const result = await loginAction({
-          phone: values.phone,
-          identityNumber: values.identityNumber,
-        })
-
-        if (result?.error) {
-          formik.setFieldError('phone', result.error)
-        }
+    onSubmit: async (values) => {
+      await onSubmit({
+        phoneNumber: values.phoneNumber,
+        cedula: values.cedula,
       })
     },
   })
@@ -40,35 +36,35 @@ export const LoginForm = () => {
     <form onSubmit={formik.handleSubmit} className="space-y-4">
       <TextField
         fullWidth
-        id="phone"
-        name="phone"
-        label="Phone"
+        id="phoneNumber"
+        name="phoneNumber"
+        label="Phone Number"
         placeholder="0412-1234567"
-        value={formik.values.phone}
+        value={formik.values.phoneNumber}
         onChange={formik.handleChange}
-        error={formik.touched.phone && Boolean(formik.errors.phone)}
-        helperText={formik.touched.phone && formik.errors.phone}
-        disabled={isPending}
+        error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+        disabled={isLoading}
       />
       <TextField
         fullWidth
-        id="identityNumber"
-        name="identityNumber"
-        label="Identity Number"
+        id="cedula"
+        name="cedula"
+        label="Cédula"
         type="password"
-        value={formik.values.identityNumber}
+        value={formik.values.cedula}
         onChange={formik.handleChange}
-        error={formik.touched.identityNumber && Boolean(formik.errors.identityNumber)}
-        helperText={formik.touched.identityNumber && formik.errors.identityNumber}
-        disabled={isPending}
+        error={formik.touched.cedula && Boolean(formik.errors.cedula)}
+        helperText={formik.touched.cedula && formik.errors.cedula}
+        disabled={isLoading}
       />
       <Button
         type="submit"
         variant="contained"
         fullWidth
-        disabled={isPending}
+        disabled={isLoading}
       >
-        {isPending ? 'Logging in...' : 'Login'}
+        {isLoading ? 'Logging in...' : 'Login'}
       </Button>
     </form>
   )
