@@ -28,9 +28,10 @@ async function getUserDetails(): Promise<AuthUser> {
   const supabase = await createServerSupabaseClient();
   
   // Get the authenticated user's ID
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
   
-  if (!user) {
+  if (userError || !user) {
+    console.error('Auth error:', userError);
     throw new AuthError(
       'Failed to get user details.',
       AuthErrorCode.SYSTEM_ERROR
@@ -40,14 +41,28 @@ async function getUserDetails(): Promise<AuthUser> {
   // Get user profile details
   const { data: profile, error: queryError } = await supabase
     .from('users')
-    .select('id, role')
+    .select('id, role, phone')
     .eq('id', user.id)
     .single();
 
-  if (queryError || !profile) {
+  if (queryError) {
     console.error('Database query error:', queryError);
+    // If the table doesn't exist, suggest running migrations
+    if (queryError.code === '42P01') {
+      throw new AuthError(
+        'Database setup required. Please run migrations.',
+        AuthErrorCode.SUPPORT_REQUIRED
+      );
+    }
     throw new AuthError(
       'An error occurred while getting user details. Please contact support.',
+      AuthErrorCode.SUPPORT_REQUIRED
+    );
+  }
+
+  if (!profile) {
+    throw new AuthError(
+      'User profile not found. Please contact support.',
       AuthErrorCode.SUPPORT_REQUIRED
     );
   }
