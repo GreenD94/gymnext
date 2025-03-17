@@ -205,3 +205,37 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Material UI for the component library
 - TanStack Query for data management
 - Supabase for backend services
+
+## 📦 Package Management
+
+### Important Note ⚠️
+
+To maintain package compatibility and version control, we follow these rules:
+
+1. **Never Modify package.json Directly**
+   - Don't manually edit version numbers
+   - Don't add/remove packages by editing the file
+
+2. **Installing Packages**
+   ```bash
+   # Production dependencies
+   npm install package-name@version
+
+   # Development dependencies
+   npm install --save-dev package-name@version
+   ```
+
+3. **Version Control**
+   - Always specify exact versions
+   - Check peer dependencies
+   - Test compatibility before committing
+
+4. **Example**
+   ```bash
+   # ✅ Do this:
+   npm install @mui/material@5.15.11
+
+   # ❌ Don't do this:
+   # - Don't edit package.json directly
+   # - Don't use loose version ranges
+   ```

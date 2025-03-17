@@ -125,19 +125,6 @@ Dark Mode Theme:
   - Business logic
 - Visual components excluded from testing requirement
 
-## Security Considerations
-1. Phone number validation (04xx-xxxxxxx)
-2. Identity number validation (max 7 digits)
-3. Role-based access control
-4. Persistent authentication
-5. Secure payment handling
-
-## Performance Goals
-1. Optimize for mobile devices
-2. Efficient image/video delivery
-3. Responsive UI
-4. Offline capabilities where possible
-
 ## Development Guidelines
 1. Strict typing with TypeScript
 2. Server actions for backend operations
@@ -145,6 +132,25 @@ Dark Mode Theme:
 4. TanStack Query for data management
 5. Bilingual support implementation
 6. Comprehensive error handling
+
+## Package Management Rules
+1. NEVER modify package.json directly
+2. ALWAYS ask the developer to install specific packages
+3. When suggesting package installation:
+   - Specify exact version needed
+   - Explain why the package is required
+   - Indicate if it's a dev dependency
+   - Provide the full installation command
+4. Example format:
+   ```bash
+   # For production dependencies
+   npm install package-name@x.x.x
+
+   # For development dependencies
+   npm install --save-dev package-name@x.x.x
+   ```
+5. Wait for package installation confirmation before proceeding with code changes
+6. If a package has peer dependencies, list them all
 
 ## Coding Standards
 1. Use TypeScript for type safety
@@ -184,3 +190,16 @@ GymNext is designed to [Add specific business context and requirements here]
 2. Implement proper ARIA attributes
 3. Ensure keyboard navigation
 4. Maintain proper color contrast 
+
+## Security Considerations
+1. Phone number validation (04xx-xxxxxxx)
+2. Identity number validation (max 7 digits)
+3. Role-based access control
+4. Persistent authentication
+5. Secure payment handling
+
+## Performance Goals
+1. Optimize for mobile devices
+2. Efficient image/video delivery
+3. Responsive UI
+4. Offline capabilities where possible 
