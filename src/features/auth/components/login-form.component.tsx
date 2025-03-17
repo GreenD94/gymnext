@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema } from '../utils/validation-schema.utils';
+import { LoginCredentials } from '../utils/auth.types';
 import {
   Box,
   Button,
@@ -8,18 +9,11 @@ import {
   Typography,
   Paper,
   InputAdornment,
-  Badge,
 } from '@mui/material';
-import { Phone } from '@mui/icons-material';
-
-
-interface LoginFormData {
-  phoneNumber: string;
-  cedula: string;
-}
+import { Phone, Badge } from '@mui/icons-material';
 
 interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => Promise<void>;
+  onSubmit: (data: LoginCredentials) => void;
   isLoading?: boolean;
 }
 
@@ -28,7 +22,7 @@ export const LoginForm = ({ onSubmit, isLoading = false }: LoginFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
+  } = useForm<LoginCredentials>({
     resolver: yupResolver(loginSchema),
     mode: 'onChange',
   });

@@ -10,7 +10,24 @@ export const useLogin = () => {
     mutationFn: loginUser,
     onSuccess: (user) => {
       // Redirect based on user role
-      router.push('/dashboard');
+      switch (user.role) {
+        case 'super_admin':
+        case 'admin':
+          router.push('/admin/dashboard');
+          break;
+        case 'trainer':
+          router.push('/trainer/dashboard');
+          break;
+        case 'client':
+        default:
+          router.push('/dashboard');
+          break;
+      }
+      router.refresh(); // Refresh the current route to update server components
+    },
+    onError: (error) => {
+      // Log error for monitoring but don't expose internal details to user
+      console.error('Login error:', error);
     },
   });
 }; 
