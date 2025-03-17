@@ -17,7 +17,12 @@ export function RootProvider({ children, initialLocale = 'en' }: RootProviderPro
     <LanguageProvider initialLocale={initialLocale}>
       <LanguageConsumer>
         {(locale) => (
-          <NextIntlClientProvider messages={messages[locale]} locale={locale}>
+          <NextIntlClientProvider 
+            messages={messages[locale]} 
+            locale={locale}
+            timeZone="America/Bogota"
+            now={new Date()}
+          >
             <ThemeProvider>
               <QueryClientProviderWrapper>
                 {/* Add other providers here as needed */}
