@@ -17,13 +17,14 @@ GymNext is a modern gym management application built with Next.js, focusing on p
 ## Project Structure
 /src
   /features           # Vertical slice architecture
+    /core            # Cross-cutting concerns and shared utilities
+      /supabase      # Supabase client and utilities
     /{feature-name}   # e.g., auth, profile, home
       /containers     # Page-level components
-      /components     # Feature-specific components
-      /actions        # Next.js server actions
-      /tests         # Unit tests
-      /utils         # Feature-specific utilities
-  /core              # Cross-cutting concerns and shared utilities
+      /components    # Feature-specific components
+      /actions       # Next.js server actions
+      /tests        # Unit tests
+      /utils        # Feature-specific utilities
   /public
     /avatars         # User avatars
       /male
