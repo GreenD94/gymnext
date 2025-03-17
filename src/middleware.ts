@@ -4,12 +4,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 const PUBLIC_ROUTES = ['/', '/login'];
 
 export async function middleware(request: NextRequest) {
-  const requestHeaders = new Headers(request.headers);
-  
-  // Create a response early to modify headers
-  const response = NextResponse.next({
+  let response = NextResponse.next({
     request: {
-      headers: requestHeaders,
+      headers: request.headers,
     },
   });
 
@@ -22,18 +19,22 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
+          // If we're setting the cookie, create a new response
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
           });
+          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
+          // If we're deleting the cookie, create a new response
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
           });
+          response.cookies.delete({ name, ...options });
         },
       },
     }
