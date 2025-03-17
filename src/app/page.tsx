@@ -1,5 +1,5 @@
-import { HomePageContainer } from '@/features/home/containers/home-page.container';
+import { LandingPageContainer } from '@/features/landing/containers/landing-page.container';
 
-export default function HomePage() {
-  return <HomePageContainer />;
+export default function LandingPage() {
+  return <LandingPageContainer />;
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/features/core/supabase/supabase.client';
+import { createServerSupabaseClient } from '@/features/core/supabase/supabase.server';
 import { AuthError, AuthErrorCode, LoginCredentials, AuthUser } from '../utils/auth.types';
 
 function formatPhoneToEmail(phone: string): string {
@@ -9,7 +9,7 @@ function formatPhoneToEmail(phone: string): string {
 }
 
 async function findUserByCredentials(credentials: LoginCredentials): Promise<AuthUser> {
-  const supabase = createClient();
+  const supabase = createServerSupabaseClient();
   const { data: user, error: queryError } = await supabase
     .from('users')
     .select('id, role')
@@ -36,7 +36,7 @@ async function findUserByCredentials(credentials: LoginCredentials): Promise<Aut
 }
 
 async function createSession(credentials: LoginCredentials): Promise<void> {
-  const supabase = createClient();
+  const supabase = createServerSupabaseClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email: formatPhoneToEmail(credentials.phoneNumber),
     password: credentials.cedula,

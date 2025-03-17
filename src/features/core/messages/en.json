@@ -25,6 +25,11 @@
             }
         }
     },
+    "landing": {
+        "welcome": "Hello World Landing",
+        "subtitle": "Welcome to GymNext - Your Fitness Journey Starts Here",
+        "login": "Login"
+    },
     "home": {
         "welcome": "Hello World Dashboard"
     }

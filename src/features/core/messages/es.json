@@ -25,6 +25,11 @@
             }
         }
     },
+    "landing": {
+        "welcome": "Página de Inicio",
+        "subtitle": "Bienvenido a GymNext - Tu Viaje Fitness Comienza Aquí",
+        "login": "Iniciar Sesión"
+    },
     "home": {
         "welcome": "Panel de Control - Hola Mundo"
     }
