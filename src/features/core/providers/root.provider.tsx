@@ -1,11 +1,13 @@
 'use client';
 
-import { ReactNode } from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
 import { QueryClientProviderWrapper } from './query-client.provider';
+import { LanguageProvider } from './language.provider';
 import { ThemeProvider } from './theme.provider';
-import { LanguageProvider, useLanguage } from './language.provider';
 import { NextIntlClientProvider } from 'next-intl';
-import { messages, type Locale } from '../messages';
+import { useMessages } from '../hooks/use-messages.hook';
+import type { ReactNode } from 'react';
+import type { Locale } from '../messages';
 
 interface RootProviderProps {
   children: ReactNode;
@@ -13,30 +15,23 @@ interface RootProviderProps {
 }
 
 export function RootProvider({ children, initialLocale = 'en' }: RootProviderProps) {
+  const { messages, locale } = useMessages();
+
   return (
     <LanguageProvider initialLocale={initialLocale}>
-      <LanguageConsumer>
-        {(locale) => (
-          <NextIntlClientProvider 
-            messages={messages[locale]} 
-            locale={locale}
-            timeZone="America/Bogota"
-            now={new Date()}
-          >
-            <ThemeProvider>
-              <QueryClientProviderWrapper>
-                {/* Add other providers here as needed */}
-                {children}
-              </QueryClientProviderWrapper>
-            </ThemeProvider>
-          </NextIntlClientProvider>
-        )}
-      </LanguageConsumer>
+      <NextIntlClientProvider 
+        messages={messages} 
+        locale={locale}
+        timeZone="America/Bogota"
+        now={new Date()}
+      >
+        <ThemeProvider>
+          <CssBaseline enableColorScheme />
+          <QueryClientProviderWrapper>
+            {children}
+          </QueryClientProviderWrapper>
+        </ThemeProvider>
+      </NextIntlClientProvider>
     </LanguageProvider>
   );
-}
-
-function LanguageConsumer({ children }: { children: (locale: Locale) => ReactNode }) {
-  const { locale } = useLanguage();
-  return <>{children(locale)}</>;
 } 

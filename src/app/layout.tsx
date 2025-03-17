@@ -21,10 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.variable} suppressHydrationWarning>
         <RootProvider>
-          <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <Box 
+            component="div"
+            sx={{ 
+              minHeight: '100vh', 
+              display: 'flex', 
+              flexDirection: 'column',
+              bgcolor: 'background.default'
+            }}
+          >
             <NavBar />
             <Box 
               component="main" 

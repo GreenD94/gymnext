@@ -5,6 +5,7 @@ import * as Yup from 'yup'
 import { Box, Button, TextField, CircularProgress } from '@mui/material'
 import { LoginCredentials } from '../utils/auth.types'
 import { useTranslations } from 'next-intl'
+import { PhoneInput } from '@/features/core/components/phone-input.component'
 
 interface LoginFormProps {
   onSubmit: (values: LoginCredentials) => void
@@ -16,32 +17,36 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
 
   const formik = useFormik({
     initialValues: {
-      phoneNumber: '',
+      phoneNumber: '04',
       cedula: '',
     },
     validationSchema: Yup.object({
       phoneNumber: Yup.string()
         .required(t('errors.phoneRequired'))
-        .matches(/^\d{10}$/, t('errors.phoneFormat')),
+        .matches(/^04\d{9}$/, t('errors.phoneFormat')),
       cedula: Yup.string()
         .required(t('errors.cedulaRequired'))
-        .matches(/^\d{10}$/, t('errors.cedulaFormat')),
+        .matches(/^\d{5,10}$/, t('errors.cedulaFormat')),
     }),
     onSubmit: (values) => {
-      onSubmit(values)
+      // Ensure clean values before submission
+      const cleanValues = {
+        phoneNumber: values.phoneNumber.trim(),
+        cedula: values.cedula.trim()
+      };
+      onSubmit(cleanValues)
     },
   })
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow digits
-    const value = e.target.value.replace(/\D/g, '')
+  const handlePhoneChange = (value: string) => {
     formik.setFieldValue('phoneNumber', value)
   }
 
   const handleCedulaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow digits
-    const value = e.target.value.replace(/\D/g, '')
-    formik.setFieldValue('cedula', value)
+    // Only allow digits and trim whitespace
+    const value = e.target.value.replace(/\D/g, '').trim()
+    const truncatedValue = value.slice(0, 10)
+    formik.setFieldValue('cedula', truncatedValue)
   }
 
   return (
@@ -55,30 +60,11 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         gap: 3,
       }}
     >
-      <TextField
-        fullWidth
-        id="phoneNumber"
-        name="phoneNumber"
-        label={t('phoneNumber')}
-        variant="outlined"
+      <PhoneInput
         value={formik.values.phoneNumber}
         onChange={handlePhoneChange}
-        onBlur={formik.handleBlur}
         error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-        disabled={isLoading}
-        inputProps={{
-          maxLength: 10,
-          inputMode: 'numeric',
-          pattern: '[0-9]*'
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': {
-              borderColor: 'primary.main',
-            },
-          },
-        }}
+        helperText={formik.touched.phoneNumber ? formik.errors.phoneNumber : undefined}
       />
       <TextField
         fullWidth
@@ -96,7 +82,8 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         inputProps={{
           maxLength: 10,
           inputMode: 'numeric',
-          pattern: '[0-9]*'
+          pattern: '[0-9]*',
+          minLength: 5
         }}
         sx={{
           '& .MuiOutlinedInput-root': {
