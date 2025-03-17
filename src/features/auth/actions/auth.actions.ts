@@ -8,33 +8,6 @@ function formatPhoneToEmail(phone: string): string {
   return `${phone.replace(/\D/g, '')}@user.com`;
 }
 
-async function findUserByCredentials(credentials: LoginCredentials): Promise<AuthUser> {
-  const supabase = createServerSupabaseClient();
-  const { data: user, error: queryError } = await supabase
-    .from('users')
-    .select('id, role')
-    .eq('phone_number', credentials.phoneNumber)
-    .eq('cedula', credentials.cedula)
-    .single();
-
-  if (queryError) {
-    console.error('Database query error:', queryError);
-    throw new AuthError(
-      'An error occurred while verifying credentials. Please contact support.',
-      AuthErrorCode.SUPPORT_REQUIRED
-    );
-  }
-
-  if (!user) {
-    throw new AuthError(
-      'Invalid phone number or cédula.',
-      AuthErrorCode.INVALID_CREDENTIALS
-    );
-  }
-
-  return user;
-}
-
 async function createSession(credentials: LoginCredentials): Promise<void> {
   const supabase = createServerSupabaseClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -45,16 +18,50 @@ async function createSession(credentials: LoginCredentials): Promise<void> {
   if (signInError) {
     console.error('Session creation error:', signInError);
     throw new AuthError(
-      'Failed to create session. Please try again.',
-      AuthErrorCode.SYSTEM_ERROR
+      'Invalid phone number or cédula.',
+      AuthErrorCode.INVALID_CREDENTIALS
     );
   }
 }
 
+async function getUserDetails(): Promise<AuthUser> {
+  const supabase = createServerSupabaseClient();
+  
+  // Get the authenticated user's ID
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new AuthError(
+      'Failed to get user details.',
+      AuthErrorCode.SYSTEM_ERROR
+    );
+  }
+
+  // Get user profile details
+  const { data: profile, error: queryError } = await supabase
+    .from('users')
+    .select('id, role')
+    .eq('id', user.id)
+    .single();
+
+  if (queryError || !profile) {
+    console.error('Database query error:', queryError);
+    throw new AuthError(
+      'An error occurred while getting user details. Please contact support.',
+      AuthErrorCode.SUPPORT_REQUIRED
+    );
+  }
+
+  return profile;
+}
+
 export async function loginUser(credentials: LoginCredentials): Promise<AuthUser> {
   try {
-    const user = await findUserByCredentials(credentials);
+    // First authenticate with Supabase
     await createSession(credentials);
+    
+    // Then get the user details
+    const user = await getUserDetails();
     return user;
   } catch (error) {
     if (error instanceof AuthError) {
