@@ -1,18 +1,16 @@
 'use client';
 
-import { createContext, useContext, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-
-type Language = 'en' | 'es';
+import { createContext, useContext, useState } from 'react';
+import type { Locale } from '../messages';
 
 interface LanguageContextType {
-  language: Language;
-  changeLanguage: (lang: Language) => void;
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  language: 'en',
-  changeLanguage: () => {},
+  locale: 'en',
+  setLocale: () => {},
 });
 
 export const useLanguage = () => {
@@ -28,22 +26,15 @@ export function LanguageProvider({
   initialLocale = 'en'
 }: { 
   children: React.ReactNode;
-  initialLocale?: Language;
+  initialLocale: Locale;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const changeLanguage = useCallback((newLanguage: Language) => {
-    const currentPath = pathname;
-    const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${newLanguage}`);
-    router.push(newPath);
-  }, [pathname, router]);
+  const [locale, setLocale] = useState<Locale>(initialLocale);
 
   return (
     <LanguageContext.Provider 
       value={{ 
-        language: initialLocale, 
-        changeLanguage 
+        locale,
+        setLocale
       }}
     >
       {children}

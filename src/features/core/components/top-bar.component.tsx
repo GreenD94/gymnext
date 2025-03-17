@@ -9,10 +9,11 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { useState } from 'react';
+import type { Locale } from '../messages';
 
 export function TopBar() {
   const { mode, toggleTheme } = useTheme();
-  const { language, changeLanguage } = useLanguage();
+  const { locale, setLocale } = useLanguage();
   const t = useTranslations();
   const [languageMenuAnchor, setLanguageMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -24,8 +25,8 @@ export function TopBar() {
     setLanguageMenuAnchor(null);
   };
 
-  const handleLanguageSelect = (newLanguage: 'en' | 'es') => {
-    changeLanguage(newLanguage);
+  const handleLanguageSelect = (newLocale: Locale) => {
+    setLocale(newLocale);
     handleLanguageClose();
   };
 
@@ -55,13 +56,13 @@ export function TopBar() {
         >
           <MenuItem 
             onClick={() => handleLanguageSelect('en')}
-            selected={language === 'en'}
+            selected={locale === 'en'}
           >
             {t('app.language.en')}
           </MenuItem>
           <MenuItem 
             onClick={() => handleLanguageSelect('es')}
-            selected={language === 'es'}
+            selected={locale === 'es'}
           >
             {t('app.language.es')}
           </MenuItem>
