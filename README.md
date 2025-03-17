@@ -1,6 +1,6 @@
 # GymNext 🏋️‍♂️
 
-A modern, feature-rich gym management system built with Next.js and Material UI. GymNext helps gyms streamline their operations while providing an engaging experience for members and trainers.
+A modern, feature-rich gym management system built with Next.js, TypeScript, and Material-UI. GymNext helps gyms streamline their operations while providing an engaging experience for members and trainers.
 
 ## 🌟 Features
 
@@ -28,7 +28,7 @@ A modern, feature-rich gym management system built with Next.js and Material UI.
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (version specified in .nvmrc)
+- Node.js 18 or later
 - npm or yarn
 - Supabase account
 
@@ -57,15 +57,57 @@ npm run dev
 
 ## 🎨 Theme Configuration
 
-### Light Theme
-- Background: Deep Navy Blue (#0A1A3F)
-- Text: White (#FFFFFF)
-- Accent: Bright Cyan Blue (#00B7FF)
+### Color Palette
 
-### Dark Theme
-- Background: Rich Black (#0A0C10)
-- Text: Light Silver (#E8E9EA)
-- Accent: Dark Steel Blue (#2A3544)
+- **Primary**: Blue (#2563eb)
+- **Secondary**: Violet (#7c3aed)
+- **Background**:
+  - Light: Slate-50 (#f8fafc)
+  - Dark: Slate-900 (#0f172a)
+- **Surface**:
+  - Light: White (#ffffff)
+  - Dark: Slate-800 (#1e293b)
+
+### Usage
+
+```typescript
+// Access theme in components
+import { useTheme } from '@mui/material/styles';
+
+function MyComponent() {
+  const theme = useTheme();
+  return (
+    <div style={{ color: theme.palette.primary.main }}>
+      Themed content
+    </div>
+  );
+}
+
+// Toggle theme
+import { useTheme } from '@/features/core/providers/theme.provider';
+
+function ThemeToggle() {
+  const { mode, toggleTheme } = useTheme();
+  return (
+    <button onClick={toggleTheme}>
+      Current theme: {mode}
+    </button>
+  );
+}
+```
+
+### Component Guidelines
+
+1. Use Material-UI components with theme customization
+2. Follow consistent spacing:
+   - Buttons/Inputs: 8px border radius
+   - Cards/Papers: 12px border radius
+3. Typography:
+   - Use theme typography variants (h1-h6, body1, body2)
+   - Font family: Inter
+4. Colors:
+   - Use theme palette colors
+   - Avoid hardcoded colors
 
 ## 🏗️ Project Structure
 

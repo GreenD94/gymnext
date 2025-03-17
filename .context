@@ -134,30 +134,76 @@ Dark Mode Theme:
 6. Comprehensive error handling
 
 ## Package Management Rules
-1. NEVER modify package.json directly
-2. ALWAYS ask the developer to install specific packages
+1. Never modify package.json directly
+2. Always ask the developer to install specific packages
 3. When suggesting package installation:
    - Specify exact version needed
-   - Explain why the package is required
+   - Explain why the package is necessary
    - Indicate if it's a dev dependency
-   - Provide the full installation command
+   - Provide full installation command
 4. Example format:
-   ```bash
-   # For production dependencies
-   npm install package-name@x.x.x
+   - Production: npm install package-name@version
+   - Development: npm install --save-dev package-name@version
+5. Wait for package installation confirmation before proceeding
+6. If package has peer dependencies, list them all
 
-   # For development dependencies
-   npm install --save-dev package-name@x.x.x
-   ```
-5. Wait for package installation confirmation before proceeding with code changes
-6. If a package has peer dependencies, list them all
+## Theme and Styling Guidelines
+1. Color System:
+   - Primary: Blue (main: #2563eb)
+   - Secondary: Violet (main: #7c3aed)
+   - Background:
+     - Light: Slate-50 (#f8fafc)
+     - Dark: Slate-900 (#0f172a)
+   - Surface:
+     - Light: White (#ffffff)
+     - Dark: Slate-800 (#1e293b)
+   - Text:
+     - Primary Light: Slate-800 (#1e293b)
+     - Primary Dark: Slate-50 (#f8fafc)
+     - Secondary Light: Slate-600 (#475569)
+     - Secondary Dark: Slate-300 (#cbd5e1)
 
-## Coding Standards
+2. Typography:
+   - Font Family: Inter
+   - Headings: Use provided h1-h6 variants
+   - Body: Use body1 and body2 variants
+   - Buttons: No text transform, 600 weight
+
+3. Component Rules:
+   - Buttons: 8px border radius, no box shadow
+   - Cards/Paper: 12px border radius
+   - Form Fields: 8px border radius
+   - Use elevation sparingly
+   - Consistent spacing using theme.spacing()
+
+4. Theme Implementation:
+   - Use MUI's theme provider
+   - Access theme via useTheme hook
+   - Support system preference for dark mode
+   - Allow manual theme toggle
+
+## Feature Organization
+1. Vertical Slice Architecture:
+   - Features are self-contained
+   - Core feature for shared functionality
+   - Each feature has its own components, hooks, and utils
+
+2. Core Feature Contains:
+   - Providers (Theme, Query, etc.)
+   - Shared utilities
+   - Base components
+
+3. Auth Feature Contains:
+   - Login functionality
+   - Authentication state management
+   - Protected routes
+
+## Code Style
 1. Use TypeScript for type safety
-2. Follow ESLint configuration for code style
-3. Implement responsive design using Tailwind classes
-4. Use functional components with React hooks
-5. Follow Next.js best practices for routing and data fetching
+2. Implement proper error handling
+3. Follow React best practices
+4. Use hooks for state management
+5. Implement proper loading states
 
 ## Development Workflow
 1. Use `npm run dev` for development with Turbopack

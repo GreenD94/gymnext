@@ -1,50 +1,64 @@
+'use client';
+
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Button, TextField } from '@mui/material'
+import { Box, Button, TextField, CircularProgress } from '@mui/material'
 import { LoginCredentials } from '../utils/auth.types'
 
-const validationSchema = Yup.object({
-  phoneNumber: Yup.string()
-    .matches(/^04\d{2}-\d{7}$/, 'Invalid phone format (e.g., 0412-1234567)')
-    .required('Phone is required'),
-  cedula: Yup.string()
-    .matches(/^\d{1,7}$/, 'Identity number must be up to 7 digits')
-    .required('Identity number is required'),
-})
-
 interface LoginFormProps {
-  onSubmit: (credentials: LoginCredentials) => Promise<void>
-  isLoading: boolean
+  onSubmit: (values: LoginCredentials) => void
+  isLoading?: boolean
 }
 
-export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
+export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
   const formik = useFormik({
     initialValues: {
       phoneNumber: '',
       cedula: '',
     },
-    validationSchema,
-    onSubmit: async (values) => {
-      await onSubmit({
-        phoneNumber: values.phoneNumber,
-        cedula: values.cedula,
-      })
+    validationSchema: Yup.object({
+      phoneNumber: Yup.string()
+        .required('Phone number is required')
+        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+      cedula: Yup.string()
+        .required('Cédula is required')
+        .matches(/^\d{10}$/, 'Cédula must be exactly 10 digits'),
+    }),
+    onSubmit: (values) => {
+      onSubmit(values)
     },
   })
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-4">
+    <Box
+      component="form"
+      onSubmit={formik.handleSubmit}
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+      }}
+    >
       <TextField
         fullWidth
         id="phoneNumber"
         name="phoneNumber"
         label="Phone Number"
-        placeholder="0412-1234567"
+        variant="outlined"
         value={formik.values.phoneNumber}
         onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
         error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
         helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
         disabled={isLoading}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+        }}
       />
       <TextField
         fullWidth
@@ -52,20 +66,39 @@ export const LoginForm = ({ onSubmit, isLoading }: LoginFormProps) => {
         name="cedula"
         label="Cédula"
         type="password"
+        variant="outlined"
         value={formik.values.cedula}
         onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
         error={formik.touched.cedula && Boolean(formik.errors.cedula)}
         helperText={formik.touched.cedula && formik.errors.cedula}
         disabled={isLoading}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '&.Mui-focused fieldset': {
+              borderColor: 'primary.main',
+            },
+          },
+        }}
       />
       <Button
         type="submit"
-        variant="contained"
         fullWidth
+        variant="contained"
+        size="large"
         disabled={isLoading}
+        sx={{
+          mt: 2,
+          height: 48,
+          bgcolor: 'primary.main',
+          color: 'white',
+          '&:hover': {
+            bgcolor: 'primary.dark',
+          },
+        }}
       >
-        {isLoading ? 'Logging in...' : 'Login'}
+        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
       </Button>
-    </form>
+    </Box>
   )
 } 

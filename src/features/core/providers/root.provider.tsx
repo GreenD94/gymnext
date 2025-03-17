@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { QueryClientProviderWrapper } from './query-client.provider';
+import { ThemeProvider } from './theme.provider';
 
 interface RootProviderProps {
   children: ReactNode;
@@ -9,9 +10,11 @@ interface RootProviderProps {
 
 export function RootProvider({ children }: RootProviderProps) {
   return (
-    <QueryClientProviderWrapper>
-      {/* Add other providers here as needed */}
-      {children}
-    </QueryClientProviderWrapper>
+    <ThemeProvider>
+      <QueryClientProviderWrapper>
+        {/* Add other providers here as needed */}
+        {children}
+      </QueryClientProviderWrapper>
+    </ThemeProvider>
   );
 } 
