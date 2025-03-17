@@ -1,0 +1,28 @@
+{
+    "app": {
+        "name": "GymNext",
+        "theme": {
+            "light": "Light",
+            "dark": "Dark"
+        },
+        "language": {
+            "en": "English",
+            "es": "Spanish"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome Back",
+            "phoneNumber": "Phone Number",
+            "cedula": "Cédula",
+            "submit": "Sign In",
+            "errors": {
+                "phoneRequired": "Phone number is required",
+                "phoneFormat": "Phone number must be exactly 10 digits",
+                "cedulaRequired": "Cédula is required",
+                "cedulaFormat": "Cédula must be exactly 10 digits",
+                "generic": "An error occurred during login"
+            }
+        }
+    }
+}

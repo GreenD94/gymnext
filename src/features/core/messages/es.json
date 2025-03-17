@@ -1,0 +1,28 @@
+{
+    "app": {
+        "name": "GymNext",
+        "theme": {
+            "light": "Claro",
+            "dark": "Oscuro"
+        },
+        "language": {
+            "en": "Inglés",
+            "es": "Español"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Bienvenido de Nuevo",
+            "phoneNumber": "Número de Teléfono",
+            "cedula": "Cédula",
+            "submit": "Iniciar Sesión",
+            "errors": {
+                "phoneRequired": "El número de teléfono es requerido",
+                "phoneFormat": "El número de teléfono debe tener exactamente 10 dígitos",
+                "cedulaRequired": "La cédula es requerida",
+                "cedulaFormat": "La cédula debe tener exactamente 10 dígitos",
+                "generic": "Ocurrió un error durante el inicio de sesión"
+            }
+        }
+    }
+}

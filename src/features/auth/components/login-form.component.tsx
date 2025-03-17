@@ -4,6 +4,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Box, Button, TextField, CircularProgress } from '@mui/material'
 import { LoginCredentials } from '../utils/auth.types'
+import { useTranslations } from 'next-intl'
 
 interface LoginFormProps {
   onSubmit: (values: LoginCredentials) => void
@@ -11,6 +12,8 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
+  const t = useTranslations('auth.login')
+
   const formik = useFormik({
     initialValues: {
       phoneNumber: '',
@@ -18,11 +21,11 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
     },
     validationSchema: Yup.object({
       phoneNumber: Yup.string()
-        .required('Phone number is required')
-        .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
+        .required(t('errors.phoneRequired'))
+        .matches(/^\d{10}$/, t('errors.phoneFormat')),
       cedula: Yup.string()
-        .required('Cédula is required')
-        .matches(/^\d{10}$/, 'Cédula must be exactly 10 digits'),
+        .required(t('errors.cedulaRequired'))
+        .matches(/^\d{10}$/, t('errors.cedulaFormat')),
     }),
     onSubmit: (values) => {
       onSubmit(values)
@@ -44,7 +47,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         fullWidth
         id="phoneNumber"
         name="phoneNumber"
-        label="Phone Number"
+        label={t('phoneNumber')}
         variant="outlined"
         value={formik.values.phoneNumber}
         onChange={formik.handleChange}
@@ -64,7 +67,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         fullWidth
         id="cedula"
         name="cedula"
-        label="Cédula"
+        label={t('cedula')}
         type="password"
         variant="outlined"
         value={formik.values.cedula}
@@ -97,7 +100,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
           },
         }}
       >
-        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+        {isLoading ? <CircularProgress size={24} color="inherit" /> : t('submit')}
       </Button>
     </Box>
   )

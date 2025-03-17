@@ -5,9 +5,11 @@ import { useLogin } from '../hooks/use-login.hook';
 import { Box, Container, Alert, Snackbar, Paper, Typography } from '@mui/material';
 import { LoginCredentials } from '../utils/auth.types';
 import { TopBar } from '@/features/core/components/top-bar.component';
+import { useTranslations } from 'next-intl';
 
 export const LoginPageContainer = () => {
   const { mutate: login, isError, error, isPending, reset } = useLogin();
+  const t = useTranslations('auth.login');
 
   const handleSubmit = async (credentials: LoginCredentials) => {
     login(credentials);
@@ -48,7 +50,7 @@ export const LoginPageContainer = () => {
               color: 'primary.main'
             }}
           >
-            Welcome Back
+            {t('title')}
           </Typography>
           <LoginForm onSubmit={handleSubmit} isLoading={isPending} />
         </Paper>
@@ -59,7 +61,7 @@ export const LoginPageContainer = () => {
           onClose={() => reset()}
         >
           <Alert severity="error" onClose={() => reset()}>
-            {error?.message || 'An error occurred during login'}
+            {error?.message || t('errors.generic')}
           </Alert>
         </Snackbar>
       </Container>
