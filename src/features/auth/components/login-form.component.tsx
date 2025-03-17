@@ -32,6 +32,18 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
     },
   })
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow digits
+    const value = e.target.value.replace(/\D/g, '')
+    formik.setFieldValue('phoneNumber', value)
+  }
+
+  const handleCedulaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow digits
+    const value = e.target.value.replace(/\D/g, '')
+    formik.setFieldValue('cedula', value)
+  }
+
   return (
     <Box
       component="form"
@@ -50,11 +62,16 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         label={t('phoneNumber')}
         variant="outlined"
         value={formik.values.phoneNumber}
-        onChange={formik.handleChange}
+        onChange={handlePhoneChange}
         onBlur={formik.handleBlur}
         error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
         helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
         disabled={isLoading}
+        inputProps={{
+          maxLength: 10,
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        }}
         sx={{
           '& .MuiOutlinedInput-root': {
             '&.Mui-focused fieldset': {
@@ -71,11 +88,16 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
         type="password"
         variant="outlined"
         value={formik.values.cedula}
-        onChange={formik.handleChange}
+        onChange={handleCedulaChange}
         onBlur={formik.handleBlur}
         error={formik.touched.cedula && Boolean(formik.errors.cedula)}
         helperText={formik.touched.cedula && formik.errors.cedula}
         disabled={isLoading}
+        inputProps={{
+          maxLength: 10,
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        }}
         sx={{
           '& .MuiOutlinedInput-root': {
             '&.Mui-focused fieldset': {

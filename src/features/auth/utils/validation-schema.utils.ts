@@ -4,9 +4,9 @@ export const loginSchema = yup.object({
   phoneNumber: yup
     .string()
     .required('Phone number is required')
-    .matches(/^04\d{2}-\d{7}$/, 'Phone number must be in format: 04XX-XXXXXXX'),
+    .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
   cedula: yup
     .string()
     .required('Cédula is required')
-    .matches(/^\d{1,7}$/, 'Cédula must be at most 7 digits')
+    .matches(/^\d{10}$/, 'Cédula must be exactly 10 digits')
 }); 
