@@ -11,14 +11,18 @@ export const createClient = () => {
       supabaseAnonKey,
       {
         cookies: {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           get(name: string) {
-            return undefined // Cookie operations should be handled in middleware
+            // Cookie operations should be handled in middleware
+            return undefined
           },
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           set(name: string, value: string, options: CookieOptions) {
-            return // Cookie operations should be handled in middleware
+            // Cookie operations should be handled in middleware
           },
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           remove(name: string, options: CookieOptions) {
-            return // Cookie operations should be handled in middleware
+            // Cookie operations should be handled in middleware
           },
         },
       }
