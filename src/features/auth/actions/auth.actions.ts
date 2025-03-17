@@ -1,11 +1,10 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/features/core/supabase/supabase.client';
 import { AuthError, AuthErrorCode, LoginCredentials, AuthUser } from '../utils/auth.types';
 
 export class AuthService {
-  constructor(private supabase = createServerActionClient({ cookies })) {}
+  private supabase = createClient();
 
   async findUserByCredentials(credentials: LoginCredentials): Promise<AuthUser> {
     const { data: user, error: queryError } = await this.supabase
@@ -42,7 +41,7 @@ export class AuthService {
     if (signInError) {
       console.error('Session creation error:', signInError);
       throw new AuthError(
-        'Failed to create session. Please contact support.',
+        'Failed to create session. Please try again.',
         AuthErrorCode.SYSTEM_ERROR
       );
     }
@@ -61,7 +60,7 @@ export async function loginUser(credentials: LoginCredentials): Promise<AuthUser
     }
     console.error('Unexpected error during login:', error);
     throw new AuthError(
-      'An unexpected error occurred. Please contact support.',
+      'An unexpected error occurred. Please try again later.',
       AuthErrorCode.SUPPORT_REQUIRED
     );
   }
