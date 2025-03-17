@@ -1,102 +1,75 @@
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { loginSchema } from '../utils/validation-schema.utils';
-import { LoginCredentials } from '../utils/auth.types';
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  InputAdornment,
-} from '@mui/material';
-import { Phone, Badge } from '@mui/icons-material';
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { Button, TextField } from '@mui/material'
+import { loginAction } from '../actions/login.action'
+import { useTransition } from 'react'
 
-interface LoginFormProps {
-  onSubmit: (data: LoginCredentials) => void;
-  isLoading?: boolean;
-}
+const validationSchema = Yup.object({
+  phone: Yup.string()
+    .matches(/^04\d{2}-\d{7}$/, 'Invalid phone format (e.g., 0412-1234567)')
+    .required('Phone is required'),
+  identityNumber: Yup.string()
+    .matches(/^\d{1,7}$/, 'Identity number must be up to 7 digits')
+    .required('Identity number is required'),
+})
 
-export const LoginForm = ({ onSubmit, isLoading = false }: LoginFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginCredentials>({
-    resolver: yupResolver(loginSchema),
-    mode: 'onChange',
-  });
+export const LoginForm = () => {
+  const [isPending, startTransition] = useTransition()
+
+  const formik = useFormik({
+    initialValues: {
+      phone: '',
+      identityNumber: '',
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      startTransition(async () => {
+        const result = await loginAction({
+          phone: values.phone,
+          identityNumber: values.identityNumber,
+        })
+
+        if (result?.error) {
+          formik.setFieldError('phone', result.error)
+        }
+      })
+    },
+  })
 
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        p: 4,
-        width: '100%',
-        maxWidth: 400,
-        mx: 'auto',
-        mt: 8,
-      }}
-    >
-      <Typography variant="h5" component="h1" gutterBottom textAlign="center">
-        Welcome Back
-      </Typography>
-      <Typography variant="body2" color="text.secondary" textAlign="center" mb={4}>
-        Please enter your credentials to continue
-      </Typography>
-
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        noValidate
-        sx={{ mt: 1 }}
+    <form onSubmit={formik.handleSubmit} className="space-y-4">
+      <TextField
+        fullWidth
+        id="phone"
+        name="phone"
+        label="Phone"
+        placeholder="0412-1234567"
+        value={formik.values.phone}
+        onChange={formik.handleChange}
+        error={formik.touched.phone && Boolean(formik.errors.phone)}
+        helperText={formik.touched.phone && formik.errors.phone}
+        disabled={isPending}
+      />
+      <TextField
+        fullWidth
+        id="identityNumber"
+        name="identityNumber"
+        label="Identity Number"
+        type="password"
+        value={formik.values.identityNumber}
+        onChange={formik.handleChange}
+        error={formik.touched.identityNumber && Boolean(formik.errors.identityNumber)}
+        helperText={formik.touched.identityNumber && formik.errors.identityNumber}
+        disabled={isPending}
+      />
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        disabled={isPending}
       >
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="phoneNumber"
-          label="Phone Number"
-          placeholder="04XX-XXXXXXX"
-          {...register('phoneNumber')}
-          error={!!errors.phoneNumber}
-          helperText={errors.phoneNumber?.message}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Phone />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="cedula"
-          label="Cédula"
-          placeholder="Enter your cédula"
-          {...register('cedula')}
-          error={!!errors.cedula}
-          helperText={errors.cedula?.message}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Badge />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Signing in...' : 'Sign In'}
-        </Button>
-      </Box>
-    </Paper>
-  );
-}; 
+        {isPending ? 'Logging in...' : 'Login'}
+      </Button>
+    </form>
+  )
+} 
