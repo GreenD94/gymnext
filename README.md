@@ -281,3 +281,46 @@ To maintain package compatibility and version control, we follow these rules:
    # - Don't edit package.json directly
    # - Don't use loose version ranges
    ```
+
+## Internationalization
+
+### Message Structure
+
+Messages are organized by feature and stored in JSON files:
+
+```typescript
+// src/features/core/messages/en.json
+{
+  "app": {
+    "name": "GymNext",
+    "theme": {
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back"
+    }
+  }
+}
+```
+
+### Using Translations
+
+```typescript
+import { useTranslations } from 'next-intl';
+
+function MyComponent() {
+  const t = useTranslations('feature.component');
+  return <h1>{t('title')}</h1>;
+}
+```
+
+### Language Switching
+
+The application supports English and Spanish languages:
+- Language can be changed via the top bar toggle
+- Uses local state management
+- No URL-based routing
+- Persists user preference

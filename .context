@@ -182,6 +182,32 @@ Dark Mode Theme:
    - Support system preference for dark mode
    - Allow manual theme toggle
 
+## Internationalization Guidelines
+1. Message Organization:
+   - Messages stored in core/messages
+   - Separate files for each language (en.json, es.json)
+   - Structured by feature and component
+   - Use dot notation for nested keys
+
+2. Translation Structure:
+   - app: Global application strings
+   - auth: Authentication-related strings
+   - features: Feature-specific strings
+   - components: Reusable component strings
+
+3. Language Implementation:
+   - Uses next-intl for translations
+   - Local state management (no URL-based routing)
+   - Language toggle in top bar
+   - Persists language preference
+   - Timezone set to "America/Bogota"
+
+4. Translation Usage:
+   - Use useTranslations hook for strings
+   - Namespace translations by feature
+   - Support HTML in translations when needed
+   - Handle pluralization when required
+
 ## Feature Organization
 1. Vertical Slice Architecture:
    - Features are self-contained
@@ -189,9 +215,10 @@ Dark Mode Theme:
    - Each feature has its own components, hooks, and utils
 
 2. Core Feature Contains:
-   - Providers (Theme, Query, etc.)
+   - Providers (Theme, Query, Language)
    - Shared utilities
    - Base components
+   - Translation messages
 
 3. Auth Feature Contains:
    - Login functionality
