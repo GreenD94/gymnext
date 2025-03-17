@@ -9,7 +9,7 @@ function formatPhoneToEmail(phone: string): string {
 }
 
 async function createSession(credentials: LoginCredentials): Promise<void> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email: formatPhoneToEmail(credentials.phoneNumber),
     password: credentials.cedula,
@@ -25,7 +25,7 @@ async function createSession(credentials: LoginCredentials): Promise<void> {
 }
 
 async function getUserDetails(): Promise<AuthUser> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   
   // Get the authenticated user's ID
   const { data: { user } } = await supabase.auth.getUser();

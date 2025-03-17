@@ -4,7 +4,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 const PUBLIC_ROUTES = ['/', '/login'];
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
+  // Create a response early to modify headers
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },
@@ -19,43 +20,48 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // If we're setting the cookie, create a new response
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+          // Create a new response with the cookie
+          response.cookies.set({
+            name,
+            value,
+            ...options,
           });
-          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          // If we're deleting the cookie, create a new response
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+          // Create a new response without the cookie
+          response.cookies.delete({
+            name,
+            ...options,
           });
-          response.cookies.delete({ name, ...options });
         },
       },
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
-  const isPublicRoute = PUBLIC_ROUTES.includes(request.nextUrl.pathname);
+  try {
+    // Refresh the session
+    const { data: { session } } = await supabase.auth.getSession();
+    const isPublicRoute = PUBLIC_ROUTES.includes(request.nextUrl.pathname);
 
-  // If the user is not logged in and trying to access a protected route
-  if (!session && !isPublicRoute) {
+    // If the user is not logged in and trying to access a protected route
+    if (!session && !isPublicRoute) {
+      const redirectUrl = new URL('/login', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // If the user is logged in and trying to access a public route
+    if (session && isPublicRoute) {
+      const redirectUrl = new URL('/dashboard', request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return response;
+  } catch (error) {
+    // If there's an error, clear the session and redirect to login
+    console.error('Auth error:', error);
     const redirectUrl = new URL('/login', request.url);
     return NextResponse.redirect(redirectUrl);
   }
-
-  // If the user is logged in and trying to access a public route
-  if (session && isPublicRoute) {
-    const redirectUrl = new URL('/dashboard', request.url);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  return response;
 }
 
 export const config = {
