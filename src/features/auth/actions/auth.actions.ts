@@ -2,47 +2,67 @@
 
 import { cookies } from 'next/headers';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import { AuthError, AuthErrorCode, LoginCredentials, AuthUser } from '../utils/auth.types';
 
-interface LoginCredentials {
-  phoneNumber: string;
-  cedula: string;
-}
+export class AuthService {
+  constructor(private supabase = createServerActionClient({ cookies })) {}
 
-export async function loginUser(credentials: LoginCredentials) {
-  const supabase = createServerActionClient({ cookies });
-  
-  try {
-    // First, query the user table to find the user with matching credentials
-    const { data: user, error: queryError } = await supabase
+  async findUserByCredentials(credentials: LoginCredentials): Promise<AuthUser> {
+    const { data: user, error: queryError } = await this.supabase
       .from('users')
       .select('id, role')
       .eq('phone_number', credentials.phoneNumber)
       .eq('cedula', credentials.cedula)
       .single();
 
-    if (queryError || !user) {
-      throw new Error('Invalid credentials');
+    if (queryError) {
+      console.error('Database query error:', queryError);
+      throw new AuthError(
+        'An error occurred while verifying credentials. Please contact support.',
+        AuthErrorCode.SUPPORT_REQUIRED
+      );
     }
 
-    // Create a custom token for the user
-    const { data: { session }, error: signInError } = await supabase.auth.signInWithPassword({
-      email: `${credentials.phoneNumber}@temp.com`, // We use phone number as email since Supabase requires email
-      password: credentials.cedula, // We use cedula as password
+    if (!user) {
+      throw new AuthError(
+        'Invalid phone number or cédula.',
+        AuthErrorCode.INVALID_CREDENTIALS
+      );
+    }
+
+    return user;
+  }
+
+  async createSession(credentials: LoginCredentials): Promise<void> {
+    const { error: signInError } = await this.supabase.auth.signInWithPassword({
+      email: `${credentials.phoneNumber}@temp.com`,
+      password: credentials.cedula,
     });
 
     if (signInError) {
-      throw signInError;
+      console.error('Session creation error:', signInError);
+      throw new AuthError(
+        'Failed to create session. Please contact support.',
+        AuthErrorCode.SYSTEM_ERROR
+      );
     }
+  }
+}
 
-    return {
-      user: {
-        id: user.id,
-        role: user.role,
-      },
-      session,
-    };
+export async function loginUser(credentials: LoginCredentials): Promise<AuthUser> {
+  try {
+    const authService = new AuthService();
+    const user = await authService.findUserByCredentials(credentials);
+    await authService.createSession(credentials);
+    return user;
   } catch (error) {
-    console.error('Login error:', error);
-    throw new Error('Authentication failed');
+    if (error instanceof AuthError) {
+      throw error;
+    }
+    console.error('Unexpected error during login:', error);
+    throw new AuthError(
+      'An unexpected error occurred. Please contact support.',
+      AuthErrorCode.SUPPORT_REQUIRED
+    );
   }
 } 
