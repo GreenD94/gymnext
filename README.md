@@ -127,8 +127,31 @@ The application is fully responsive and optimized for mobile devices, providing 
 
 ## 🤝 Contributing
 
+### Branch Naming Convention 🌿
+
+We follow a strict branch naming convention to maintain consistency and clarity:
+
+```
+username/type/task_name
+```
+
+- All branches must be created from `develop`
+- Use only lowercase English letters and underscores
+- Components:
+  - `username`: Your developer name (e.g., hernando)
+  - `type`: Either `feature` or `fix`
+  - `task_name`: Brief description using underscores
+
+Examples:
+```bash
+hernando/feature/create_login_form
+john/fix/password_validation
+maria/feature/add_exercise_tracker
+```
+
+### Contributing Steps
 1. Fork the repository
-2. Create your feature branch
+2. Create your feature branch following the naming convention
 3. Follow our coding standards
 4. Submit a pull request
 

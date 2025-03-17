@@ -131,6 +131,17 @@ Dark Mode Theme:
 3. Ensure all code passes linting (`npm run lint`)
 4. Build with `npm run build` for production
 
+## Branch Naming Convention
+- All branches must be created from `develop`
+- Branch names must be in English and lowercase
+- Words must be separated by underscores
+- Format: `[username]/[type]/[task_name]`
+  - username: Developer's name
+  - type: Either 'feature' or 'fix'
+  - task_name: Brief description of the task
+- Example: `hernando/feature/create_login_form`
+- Example: `john/fix/password_validation`
+
 ## Important Notes
 - The project uses the latest React features
 - TypeScript strict mode is enabled
