@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '../actions/auth.actions';
+import { login } from '../actions/login.client';
 import { AuthError, LoginCredentials, AuthUser } from '../utils/auth.types';
 import { useRouter } from 'next/navigation';
 
@@ -7,7 +7,7 @@ export const useLogin = () => {
   const router = useRouter();
 
   return useMutation<AuthUser, AuthError, LoginCredentials>({
-    mutationFn: loginUser,
+    mutationFn: login,
     onSuccess: (user) => {
       // Redirect based on user role
       switch (user.role) {

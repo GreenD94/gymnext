@@ -36,13 +36,13 @@ describe('AuthService', () => {
     it('should return user when credentials are valid', async () => {
       const mockSelect = jest.fn().mockReturnThis();
       const mockEq = jest.fn().mockReturnThis();
-      const mockSingle = jest.fn().mockResolvedValue({ data: mockUser, error: null });
+      const mockSingle = jest.fn().mockResolvedValue({ data: mockUser, error: null }as never);
 
       mockSupabase.from.mockReturnValue({
         select: mockSelect,
         eq: mockEq,
         single: mockSingle,
-      } as any);
+      } as never);
 
       const result = await authService.findUserByCredentials(validCredentials);
       expect(result).toEqual(mockUser);
@@ -54,13 +54,13 @@ describe('AuthService', () => {
     it('should throw INVALID_CREDENTIALS when user not found', async () => {
       const mockSelect = jest.fn().mockReturnThis();
       const mockEq = jest.fn().mockReturnThis();
-      const mockSingle = jest.fn().mockResolvedValue({ data: null, error: null });
+      const mockSingle = jest.fn().mockResolvedValue({ data: null, error: null }as never);
 
       mockSupabase.from.mockReturnValue({
         select: mockSelect,
         eq: mockEq,
         single: mockSingle,
-      } as any);
+      } as never);
 
       await expect(authService.findUserByCredentials(validCredentials))
         .rejects
@@ -70,13 +70,13 @@ describe('AuthService', () => {
     it('should throw SUPPORT_REQUIRED on database error', async () => {
       const mockSelect = jest.fn().mockReturnThis();
       const mockEq = jest.fn().mockReturnThis();
-      const mockSingle = jest.fn().mockResolvedValue({ data: null, error: new Error('DB Error') });
+      const mockSingle = jest.fn().mockResolvedValue({ data: null, error: new Error('DB Error') } as never);
 
       mockSupabase.from.mockReturnValue({
         select: mockSelect,
         eq: mockEq,
         single: mockSingle,
-      } as any);
+      } as never);
 
       await expect(authService.findUserByCredentials(validCredentials))
         .rejects
@@ -86,12 +86,12 @@ describe('AuthService', () => {
 
   describe('createSession', () => {
     it('should create session successfully', async () => {
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: {}, error: null } as any);
+      mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: {}, error: null } as never);
       await expect(authService.createSession(validCredentials)).resolves.not.toThrow();
     });
 
     it('should throw SYSTEM_ERROR on session creation failure', async () => {
-      mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: null, error: new Error('Session Error') } as any);
+      mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: null, error: new Error('Session Error') } as never);
       await expect(authService.createSession(validCredentials))
         .rejects
         .toThrow(new AuthError('Failed to create session. Please try again.', AuthErrorCode.SYSTEM_ERROR));
@@ -107,14 +107,14 @@ describe('loginUser', () => {
   it('should login successfully with valid credentials', async () => {
     const mockSelect = jest.fn().mockReturnThis();
     const mockEq = jest.fn().mockReturnThis();
-    const mockSingle = jest.fn().mockResolvedValue({ data: mockUser, error: null });
+    const mockSingle = jest.fn().mockResolvedValue({ data: mockUser, error: null } as never);
 
     mockSupabase.from.mockReturnValue({
       select: mockSelect,
       eq: mockEq,
       single: mockSingle,
-    } as any);
-    mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: {}, error: null } as any);
+    } as never);
+    mockSupabase.auth.signInWithPassword.mockResolvedValue({ data: {}, error: null } as never);
 
     const result = await loginUser(validCredentials);
     expect(result).toEqual(mockUser);
@@ -123,13 +123,13 @@ describe('loginUser', () => {
   it('should propagate AuthError from service methods', async () => {
     const mockSelect = jest.fn().mockReturnThis();
     const mockEq = jest.fn().mockReturnThis();
-    const mockSingle = jest.fn().mockResolvedValue({ data: null, error: null });
+    const mockSingle = jest.fn().mockResolvedValue({ data: null, error: null } as never);
 
     mockSupabase.from.mockReturnValue({
       select: mockSelect,
       eq: mockEq,
       single: mockSingle,
-    } as any);
+    } as never);
 
     await expect(loginUser(validCredentials))
       .rejects
