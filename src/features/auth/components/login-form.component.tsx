@@ -8,8 +8,10 @@ import {
   Typography,
   Paper,
   InputAdornment,
+  Badge,
 } from '@mui/material';
-import { Phone, Badge } from '@mui/icons-material';
+import { Phone } from '@mui/icons-material';
+
 
 interface LoginFormData {
   phoneNumber: string;
